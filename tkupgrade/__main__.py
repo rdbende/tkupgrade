@@ -37,9 +37,7 @@ def blacken(string):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="tkupgrade", description="Upgrade tkinter apps to tukaan"
-    )
+    parser = argparse.ArgumentParser(prog="tkupgrade", description="Upgrade tkinter apps to tukaan")
     parser.add_argument("filename")
     parser.add_argument("--skip-black", action="store_true")
     args = parser.parse_args()
