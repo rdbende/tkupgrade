@@ -44,23 +44,25 @@ class AddAppContext(refactor.Rule):
         assert node.value.func.value.id == state.tkinter_as
         assert node.value.func.attr == "Tk"
 
-        replacement = ast.Assign(
+        app_ast = ast.Assign(
             targets=[ast.Name("app")],
             value=ast.Call(
                 ast.Attribute(value=ast.Name(state.tukaan_as), attr="App"), args=(), keywords=()
             ),
         )
-        ast.fix_missing_locations(replacement)
 
-        window = ast.Assign(
+        window_ast = ast.Assign(
             targets=node.targets,
             value=ast.Call(
-                ast.Attribute(value=ast.Name(state.tukaan_as), attr="MainWindow"), args=(), keywords=()
+                ast.Attribute(value=ast.Name(state.tukaan_as), attr="MainWindow"),
+                args=(),
+                keywords=(),
             ),
         )
-        ast.fix_missing_locations(window)
+        ast.fix_missing_locations(app_ast)
+        ast.fix_missing_locations(window_ast)
 
-        for i in (Replace(node, replacement), InsertAfter(node, window)):
+        for i in (Replace(node, app_ast), InsertAfter(node, window_ast)):
             yield i
 
 
@@ -73,9 +75,7 @@ class MainloopToRun(refactor.Rule):
         assert node.value.func.attr == "mainloop"
 
         replacement = ast.Expr(
-            value=ast.Call(
-                ast.Attribute(value=ast.Name("app"), attr="run"), args=(), keywords=()
-            )
+            value=ast.Call(ast.Attribute(value=ast.Name("app"), attr="run"), args=(), keywords=())
         )
         ast.fix_missing_locations(replacement)
 
